@@ -104,6 +104,32 @@ class MLIA():
         X_val_clean[self.features] = knn_model.predict(self.X_val[self.X_cols])
         return X_train_clean, X_val_clean
 
+    # --- XGBoost replacement ---
+    def XGB_method(self):
+        if not self.X_cols:
+            warnings.warn("All features have outliers. XGBRegressor couldn't work.")
+            return self.X_train.copy(), self.X_val.copy()
+        
+        X_train_copy = self.X_train.copy()
+        X_val_copy = self.X_val.copy()
+        xgb_model = XGBRegressor().fit(self.X_train[self.X_cols], self.X_train[self.features])
+        X_train_clean[self.features] = xgb_model.predict(self.X_train[self.X_cols])
+        X_val_clean[self.features] = xgb_model.predict(self.X_val[self.X_cols])
+        return X_train_clean, X_val_clean
+    
+    # --- LGBMRegressor replacement ---
+    def LGB_method(self) :
+        if not self.X_cols:
+            warnings.warn("All features have outliers. XGBRegressor couldn't work.")
+            return self.X_train.copy(), self.X_val.copy()
+        
+        X_train_copy = self.X_train.copy()
+        X_val_copy = self.X_val.copy()
+        xgb_model = LGBMRegressor().fit(self.X_train[self.X_cols], self.X_train[self.features])
+        X_train_clean[self.features] = xgb_model.predict(self.X_train[self.X_cols])
+        X_val_clean[self.features] = xgb_model.predict(self.X_val[self.X_cols])
+        return X_train_clean, X_val_clean
+
     # --- Forward evaluation ---
     def forward(self):
         methods = {
@@ -115,6 +141,8 @@ class MLIA():
             "IsolationForest": self.isolation_forest,
             "BoxCox": self.boxcox_transform,
             "KNN": self.knn_method,
+            "XGB": self.XGB_method,
+            "LGB": self.LGB_method,
             "Original": lambda: (self.X_train.copy(), self.X_val.copy())
         }
 

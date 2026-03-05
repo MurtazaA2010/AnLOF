@@ -1,6 +1,6 @@
 # AnLOF
 
-**AnLOF** is a machine learning utility library built to automatically handle outliers effectively.
+**[AnLOF](https://pypi.org/project/AnLOF/)** is a machine learning utility library built to automatically handle outliers effectively.
 
 AnLOF uses multiple outlier-handling techniques and automatically selects the best-performing method.
 

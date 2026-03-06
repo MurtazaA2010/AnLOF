@@ -257,6 +257,27 @@ class AnLOF():
             "Original": lambda: (self.X_train.copy(), self.X_val.copy())
         }
 
+        cat_cols = self.X_train.select_dtypes(include = ["object", "category"]).columns.tolist()
+        nul_cols = self.X_train.columns[self.X_train.isnull().any()].tolist()
+
+        encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
+        num_imputer = SimpleImputer(strategy="mean")
+        cat_imputer = SimpleImputer(strategy="most_frequent")
+        
+        if cat_cols is not None:
+            self.X_train[cat_cols] = encoder.fit_transform(self.X_train[cat_cols])
+            self.X_val[cat_cols] = encoder.transform(self.X_val[cat_cols])
+            warnings.warn(f"Categorical columns {cat_cols} have been encoded using OrdinalEncoder for outlier detection methods.")
+        for col in nul_cols:
+            if col not in cat_cols:
+                self.X_train[col] = num_imputer.fit_transform(self.X_train[[col]])
+                self.X_val[col] = num_imputer.transform(self.X_val[[col]])
+                warnings.warn("Missing values in numerical columns have been imputed with the mean value for outlier detection methods.")
+            else:
+                self.X_train[col] = cat_imputer.fit_transform(self.X_train[[col]])
+                self.X_val[col] = cat_imputer.transform(self.X_val[[col]])
+                warnings.warn("Missing values in categorical columns have been imputed with the most frequent value for outlier detection methods.")
+        
         results = []
         best_score = -np.inf if self.higher_is_better else np.inf
         best_X_train = self.X_train.copy()

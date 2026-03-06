@@ -7,5 +7,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.impute import SimpleImputer
 from sklearn.ensemble import IsolationForest
-from sklearn.preprocessing import PowerTransformer
+from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler, QuantileTransformer, PowerTransformer,OrdinalEncoder
+from xgboost import XGBRegressor
+from catboost import CatBoostRegressor
 import warnings
